@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content_title %}{% endblock %}
+{% block content %}
+
+    <ul>
+    {% for link in links %}
+        <li>
+            <h3><a href="{{ link.url }}">{{ link.name }}</a></h3>
+            <small>
+                {% for tag in link.tags %}
+                    #{{ tag }}
+                {% endfor %}
+                {{ link.date }}
+            </small>
+            <p>{{ link.label }}</p>
+            <p><a href="{{ link.url }}">{{ link.url }}</a></p>
+        </li>
+    {% endfor %}
+    </ul>
+    <p>
+        {%  for i in range(1, pagination_info.nb_page + 1) %}
+            {% if i > 1 %}
+                -
+            {% endif %}
+            {% if i == pagination_info.cur_page %}
+                <strong>{{ i }}</strong>
+            {% else %}
+                <a href="shared_links_{{ i }}.html">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+    </p>
+{% endblock content %}
+
