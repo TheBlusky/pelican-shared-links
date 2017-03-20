@@ -4,11 +4,13 @@ Sharing links (Shaarli Clone) plugin for Pelican
 ## Installation 
 - Add `shared_links.py` in your plugin directory
 - Add `shared_links.json` in your content directory
-- Rename `shared_links.template-example.html` into `shared_links.html` in your template directoy, in change its content accorded to your template
+- Rename `shared_links.template-example.html` into `shared_links.html` in your template directoy, and change its content according to your template
 - Change your `pelican` configuration so `shared_links` plugin is added, example:
 ```
-PLUGIN_PATHS = ["plugins", "./plugins"]
+PLUGIN_PATHS = ["plugins"]
 PLUGINS = ["plugins.shared_links"]
+
+SHARED_LINKS_PAGINATION = 5
 ```
 
 ## Usage
