@@ -5,13 +5,14 @@ import os
 
 
 class ShareLinkGenerator(Generator):
-    def __init__(self, context, settings, path, theme, output_path, readers_cache_name='', **kwargs):
-        super().__init__(context, settings, path, theme, output_path, readers_cache_name, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(ShareLinkGenerator, self).__init__(*args, **kwargs)
         self.links = []
 
     def generate_context(self):
         with open(os.path.join(self.context['PATH'], 'shared_links.json')) as data_file:
             self.links = json.load(data_file)[::-1]
+        self.context['last_shared_link'] = self.links[0]
 
     def write_file(self, writer, dest, links, pagination_info):
         writer.write_file(dest, self.env.get_template("shared_links.html"), self.context, links=links,
@@ -21,7 +22,7 @@ class ShareLinkGenerator(Generator):
         current_page_links = []
         print()
         pagination_info = {
-            'nb_per_page': self.context['SHARED_LINKS_PAGINATION'] if 'SHARED_LINKS_PAGINATION' in self.context else 5,
+            'nb_per_page': self.settings.get('SHARED_LINKS_PAGINATION', 5),
             'cur_page': 1,
             'nb': len(self.links)}
         pagination_info['nb_page'] = int((pagination_info['nb']-1)/pagination_info['nb_per_page'])+1
@@ -47,14 +48,6 @@ def get_generator(o):
     return ShareLinkGenerator
 
 
-def add_laste_shared_link(generators):
-    with open(os.path.join(generators[0].context['PATH'], 'shared_links.json')) as data_file:
-        links = json.load(data_file)
-    for generator in generators:
-        generator.context['last_shared_link'] = links[-1]
-
-
 def register():
     signals.get_generators.connect(get_generator)
-    signals.all_generators_finalized.connect(add_laste_shared_link)
 
