@@ -1,6 +1,7 @@
 from pelican.generators import Generator
 from pelican import signals
 import json
+import os
 
 
 class ShareLinkGenerator(Generator):
@@ -9,7 +10,7 @@ class ShareLinkGenerator(Generator):
         self.links = []
 
     def generate_context(self):
-        with open(self.context['PATH']+'/shared_links.json') as data_file:
+        with open(os.path.join(self.context['PATH'], 'shared_links.json')) as data_file:
             self.links = json.load(data_file)[::-1]
 
     def write_file(self, writer, dest, links, pagination_info):
@@ -18,7 +19,11 @@ class ShareLinkGenerator(Generator):
 
     def generate_output(self, writer):
         current_page_links = []
-        pagination_info = {'nb_per_page': 5, 'cur_page': 1, 'nb': len(self.links)}
+        print()
+        pagination_info = {
+            'nb_per_page': self.context['SHARED_LINKS_PAGINATION'] if 'SHARED_LINKS_PAGINATION' in self.context else 5,
+            'cur_page': 1,
+            'nb': len(self.links)}
         pagination_info['nb_page'] = int((pagination_info['nb']-1)/pagination_info['nb_per_page'])+1
         for link in self.links:
             current_page_links.append(link)
@@ -43,7 +48,7 @@ def get_generator(o):
 
 
 def add_laste_shared_link(generators):
-    with open(generators[0].context['PATH'] + '/shared_links.json') as data_file:
+    with open(os.path.join(generators[0].context['PATH'], 'shared_links.json')) as data_file:
         links = json.load(data_file)
     for generator in generators:
         generator.context['last_shared_link'] = links[-1]
