@@ -39,8 +39,12 @@ def new_link(url, tags, label, name, date):
         name = BeautifulSoup(requests.get(url).content, "html.parser").title.string
     if date is None:
         date = str(datetime.datetime.now()).split(".")[0]
-    with open(os.path.join('content', 'shared_links.json')) as data_file:
-        links = json.load(data_file)
+    json_filename = os.path.join('content', 'shared_links.json')
+    if os.path.exist(json_filename):
+        with open(json_filename) as data_file:
+            links = json.load(data_file)
+    else:
+        links = []
     links.append({"date":date, "name":name, "url": url, "label": label, "tags":tags})
     with open(os.path.join('content', 'shared_links.json'), 'w') as data_file:
         json.dump(links, data_file)
