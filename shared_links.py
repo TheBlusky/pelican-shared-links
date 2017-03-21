@@ -20,7 +20,6 @@ class ShareLinkGenerator(Generator):
 
     def generate_output(self, writer):
         current_page_links = []
-        print()
         pagination_info = {
             'nb_per_page': self.settings.get('SHARED_LINKS_PAGINATION', 5),
             'cur_page': 1,
